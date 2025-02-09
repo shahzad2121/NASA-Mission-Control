@@ -1,21 +1,33 @@
+const path = require("path");
 const express = require("express");
-const cors = require('cors')
+const cors = require("cors");
+const morgan = require("morgan");
 
-const planetsRouter = require('./routes/Planets/planets.router')
-
+const planetsRouter = require("./routes/Planets/planets.router");
+const launchesRouter = require("./routes/Launches/launches.router");
 const app = express();
 
 //this will allow localhost:3000 to access data from our server
 //there is also whitelisting for multiple origins
-app.use(cors({
-    origin:'http://localhost:3000'
-}))
-app.use(express.json())
-app.use(planetsRouter)
-// app.use((req, res, next) => {
-//     res.send(planetsRouter)
-//     next()
-// })
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+app.use(morgan("combined"));
 
-module.exports = app
+app.use(express.json());
 
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+app.use(planetsRouter);
+app.use(launchesRouter);
+
+//* will count every endpoint after / and express will check it in the middlewares and 
+// if the route is not present it will handle it to the index.html and then the 
+// framework(React) will handle this route.
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
+
+module.exports = app;
