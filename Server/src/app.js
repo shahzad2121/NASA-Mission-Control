@@ -15,6 +15,7 @@ app.use(
   })
 );
 app.use(morgan("combined"));
+app.use(morgan("short"));
 
 app.use(express.json());
 
