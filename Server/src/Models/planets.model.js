@@ -7,7 +7,7 @@ const path = require("path");
 const habitablePlanets = [];
 
 // Function to check if a planet is habitablePlanets based on certain conditions
-function isHabitaable(planet) {
+function isHabitable(planet) {
   // Checks if the planet is confirmed, has the right amount of sunlight, and a suitable radius
   return (
     planet["koi_disposition"] === "CONFIRMED" &&
@@ -21,7 +21,7 @@ function loadPlanetsData() {
   // Read the CSV file and parse it line by line
   return new Promise((resolve, reject) => {
     fs.createReadStream(
-      path.join(__dirname, "..","..", "data", "kepler_data.csv")
+      path.join(__dirname, "..", "..", "data", "kepler_data.csv")
     )
       .pipe(
         parse({
@@ -31,7 +31,7 @@ function loadPlanetsData() {
       )
       .on("data", (data) => {
         // For each row (planet data), check if the planet is habitablePlanets
-        if (isHabitaable(data)) {
+        if (isHabitable(data)) {
           habitablePlanets.push(data); // If it's habitablePlanets, add it to the habitablePlanets array
         }
       })
@@ -52,7 +52,11 @@ function loadPlanetsData() {
   });
 }
 
+function getAllPlanets() {
+  return habitablePlanets;
+}
+
 module.exports = {
   loadPlanetsData,
-  planets: habitablePlanets,
+  getAllPlanets,
 };
