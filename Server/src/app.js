@@ -11,6 +11,7 @@ const app = express();
 //there is also whitelisting for multiple origins
 app.use(cors());
 app.use(morgan("combined"));
+app.use(morgan("short"));
 
 app.use(express.json());
 
