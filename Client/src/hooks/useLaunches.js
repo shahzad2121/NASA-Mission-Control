@@ -12,7 +12,7 @@ function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
 
   const getLaunches = useCallback(async () => {
     const fetchedLaunches = await httpGetLaunches();
-    console.log("Fetched launches in frontend:", fetchedLaunches);
+    // console.log("Fetched launches in frontend:", fetchedLaunches);
     saveLaunches(fetchedLaunches);
   }, []);
 

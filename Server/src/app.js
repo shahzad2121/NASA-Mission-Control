@@ -9,22 +9,17 @@ const app = express();
 
 //this will allow localhost:3000 to access data from our server
 //there is also whitelisting for multiple origins
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
+app.use(cors());
 app.use(morgan("combined"));
 
 app.use(express.json());
 
+app.use("/planets", planetsRouter);
+app.use("/launches", launchesRouter);
+
 app.use(express.static(path.join(__dirname, "..", "public")));
-
-app.use(planetsRouter);
-app.use(launchesRouter);
-
-//* will count every endpoint after / and express will check it in the middlewares and 
-// if the route is not present it will handle it to the index.html and then the 
+//* will count every endpoint after / and express will check it in the middlewares and
+// if the route is not present it will handle it to the index.html and then the
 // framework(React) will handle this route.
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));

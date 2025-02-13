@@ -18,7 +18,6 @@ async function httpGetLaunches() {
 // Submit given launch data to launch system.
 async function httpSubmitLaunch(launch) {
   try {
-    console.log("Submitting Launch:", launch);
     return await fetch(`${API_URL}/launches`, {
       method: "post",
       headers: {
@@ -36,9 +35,12 @@ async function httpSubmitLaunch(launch) {
 // Delete launch with given ID.
 async function httpAbortLaunch(id) {
   try {
-    await fetch(`${API_URL}/upcoming/:id`, { method: "delete" });
+    return await fetch(`${API_URL}/launches/${id}`, { method: "delete" });
   } catch (error){
-    error
+   console.log(error);
+   return {
+    ok:false
+   }
     
   }
 }
