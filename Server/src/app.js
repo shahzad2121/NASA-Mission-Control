@@ -9,14 +9,23 @@ const app = express();
 
 //this will allow localhost:3000 to access data from our server
 //there is also whitelisting for multiple origins
-app.use(cors());
+app.use(cors({
+  allowedHeaders:'*'
+}));
 app.use(morgan("combined"));
-app.use(morgan("short"));
 
 app.use(express.json());
 
 app.use("/planets", planetsRouter);
 app.use("/launches", launchesRouter);
+
+
+const user = { name: "Shahzad", age: 22, city: "Lahore" };
+for (let key in user) {
+  console.log(`${key}: ${user[key]}`);
+}
+
+
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 //* will count every endpoint after / and express will check it in the middlewares and
