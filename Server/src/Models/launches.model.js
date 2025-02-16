@@ -9,7 +9,7 @@ const launch = {
   rocket: "Explorer IS1",
   launchDate: new Date("December 24, 2030"), // Convert string to Date object
   target: "Kepler-442 b",
-  customers: ["shahzad", "NASA"],
+  customers: ["Shahzad", "NASA"],
   upcoming: true, // Indicates if the launch is scheduled
   success: true, // Whether the launch was successful
 };
