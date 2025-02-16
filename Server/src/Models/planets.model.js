@@ -1,59 +1,74 @@
-// Import the required modules
-const { parse } = require("csv-parse"); // Parses CSV data
-const fs = require("fs"); // Handles file system operations
+const { parse } = require("csv-parse");
+const fs = require("fs");
 const path = require("path");
 
-// Initialize an empty array to store habitablePlanets planets
-const habitablePlanets = [];
+const planets = require("./planets.mongo");
 
-// Function to check if a planet is habitablePlanets based on certain conditions
 function isHabitable(planet) {
-  // Checks if the planet is confirmed, has the right amount of sunlight, and a suitable radius
   return (
     planet["koi_disposition"] === "CONFIRMED" &&
-    planet["koi_insol"] > 0.36 && // Planet's sunlight must be between 0.36 and 1.11
+    planet["koi_insol"] > 0.36 &&
     planet["koi_insol"] < 1.11 &&
     planet["koi_prad"] < 1.6
-  ); // Planet's radius must be smaller than 1.6
+  );
 }
 
 function loadPlanetsData() {
-  // Read the CSV file and parse it line by line
   return new Promise((resolve, reject) => {
     fs.createReadStream(
       path.join(__dirname, "..", "..", "data", "kepler_data.csv")
     )
       .pipe(
         parse({
-          comment: "#", // Ignore any line starting with "#" (comments)
-          columns: true, // Treat the first row as column headers
+          comment: "#",
+          columns: true,
         })
       )
-      .on("data", (data) => {
-        // For each row (planet data), check if the planet is habitablePlanets
+      .on("data", async (data) => {
         if (isHabitable(data)) {
-          habitablePlanets.push(data); // If it's habitablePlanets, add it to the habitablePlanets array
+          await savePlanets(data);
         }
       })
       .on("error", (err) => {
-        // Handle any errors that occur while reading or parsing the file
         console.log("no data found", err);
         reject(err);
       })
-      .on("end", () => {
-        // Once the parsing is complete, log the names of habitablePlanets planets
+      .on("end", async () => {
+        const countPlanetsFound = (await getAllPlanets()).length;
 
-        // Log how many planets are habitablePlanets
-        console.log(`${habitablePlanets.length} planets are habitablePlanets`);
-        // Optional: Log a message indicating the end of processing
-        // console.log("no more data");
+        console.log(`${countPlanetsFound} planets are habitablePlanets`);
+
         resolve();
       });
   });
 }
 
 function getAllPlanets() {
-  return habitablePlanets;
+  return planets.find(
+    {},
+    {
+      __id: 0,
+      __v: 0,
+    }
+  );
+}
+
+async function savePlanets(planet) {
+  try {
+    await planets.updateOne(
+      {
+        keplerName: planet.kepler_name,
+      },
+      {
+        keplerName: planet.kepler_name,
+      },
+      {
+        upsert: true,
+      }
+    );
+  } catch (err) {
+    console.error(`planet is not saved ${err}`);
+  }
 }
 
 module.exports = {
