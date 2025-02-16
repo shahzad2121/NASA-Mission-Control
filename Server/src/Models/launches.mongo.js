@@ -19,7 +19,7 @@ const launchesSchema = new mongoose.Schema({
   },
   customers: {
     type: Array,
-    default: ["Shahzad", "NASA"],
+    required:true
   },
   target: {
     type: String,
@@ -35,3 +35,5 @@ const launchesSchema = new mongoose.Schema({
     default: true,
   },
 });
+
+module.exports = mongoose.model('Launch', launchesSchema)
